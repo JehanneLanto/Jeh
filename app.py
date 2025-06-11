@@ -18,6 +18,21 @@ if uploaded:
         st.success("Horaire généré ✅")
         st.dataframe(sol_df)
 
+        if st.checkbox("Afficher le calendrier hebdo 🗓️"):
+            gdf = gantt_dataframe(sol_df)
+            import plotly.express as px
+            fig = px.timeline(
+                gdf,
+                x_start="StartDT",
+                x_end="EndDT",
+                y="course_code",
+                color="course_code",
+                title="Vue hebdomadaire",
+            )
+            fig.update_yaxes(autorange="reversed")
+            fig.update_layout(height=420, margin=dict(t=40, b=20))
+            st.plotly_chart(fig, use_container_width=True)
+
         if st.button("Télécharger .ics"):
             ics = utils.to_ics(sol_df)
             st.download_button(
@@ -33,19 +48,3 @@ else:
         solution = solve_schedule(df)
         st.dataframe(pd.DataFrame(solution))
 
-from utils import gantt_dataframe
-
-if st.checkbox("Afficher le calendrier hebdo 🗓️"):
-    gdf = gantt_dataframe(sol_df)
-    import plotly.express as px
-    fig = px.timeline(
-        gdf,
-        x_start="StartDT",
-        x_end="EndDT",
-        y="course_code",
-        color="course_code",
-        title="Vue hebdomadaire",
-    )
-    fig.update_yaxes(autorange="reversed")
-    fig.update_layout(height=420, margin=dict(t=40, b=20))
-    st.plotly_chart(fig, use_container_width=True)
