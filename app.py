@@ -1,3 +1,4 @@
+from utils import gantt_dataframe
 import streamlit as st
 import pandas as pd
 from scheduler import solve_schedule
